@@ -8,10 +8,12 @@ import {
   FlatList,
   TouchableOpacity,
   Alert,
+  ImageBackground
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-const COLORS = {primary: '#1f145c', white: '#fff'};
+const COLORS = { primary: '#1f145c', white: '#fff' };
 
 const App = () => {
   const [todos, setTodos] = React.useState([]);
@@ -27,7 +29,7 @@ const App = () => {
 
   const addTodo = () => {
     if (textInput == '') {
-      Alert.alert('Error', 'Please input todo');
+      Alert.alert('OOPS!', 'Please enter a task.');
     } else {
       const newTodo = {
         id: Math.random(),
@@ -62,7 +64,7 @@ const App = () => {
   const markTodoComplete = todoId => {
     const newTodosItem = todos.map(item => {
       if (item.id == todoId) {
-        return {...item, completed: true};
+        return { ...item, completed: true };
       }
       return item;
     });
@@ -87,10 +89,10 @@ const App = () => {
     ]);
   };
 
-  const ListItem = ({todo}) => {
+  const ListItem = ({ todo }) => {
     return (
       <View style={styles.listItem}>
-        <View style={{flex: 1}}>
+        <View style={{ flex: 1 }}>
           <Text
             style={{
               fontWeight: 'bold',
@@ -103,7 +105,7 @@ const App = () => {
         </View>
         {!todo?.completed && (
           <TouchableOpacity onPress={() => markTodoComplete(todo.id)}>
-            <View style={[styles.actionIcon, {backgroundColor: 'green'}]}>
+            <View style={[styles.actionIcon, { backgroundColor: 'green' }]}>
               <Icon name="done" size={20} color="white" />
             </View>
           </TouchableOpacity>
@@ -129,22 +131,36 @@ const App = () => {
             fontSize: 20,
             color: COLORS.primary,
           }}>
-          TODO APP
+          TO-DO LIST
         </Text>
         <Icon name="delete" size={25} color="red" onPress={clearAllTodos} />
       </View>
-      <FlatList
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{padding: 20, paddingBottom: 100}}
-        data={todos}
-        renderItem={({item}) => <ListItem todo={item} />}
-      />
+      <View style={styles.container}>
+
+
+
+        <ImageBackground
+          resizeMode={'stretch'} // or cover
+          style={{ flex: 1 }} // must be passed from the parent, the number may vary depending upon your screen size
+          source={require('./assests/background-image.jpg')}
+        >
+
+          <FlatList
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ padding: 20, paddingBottom: 100 }}
+            data={todos}
+            renderItem={({ item }) => <ListItem todo={item} />}
+          />
+        </ImageBackground>
+
+      </View>
+
 
       <View style={styles.footer}>
         <View style={styles.inputContainer}>
           <TextInput
             value={textInput}
-            placeholder="Add Todo"
+            placeholder="Add Tasks"
             onChangeText={text => setTextInput(text)}
           />
         </View>
@@ -159,13 +175,19 @@ const App = () => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  gradient: {
+    flex: 1,
+  },
   footer: {
     position: 'absolute',
     bottom: 0,
     width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
     backgroundColor: COLORS.white,
   },
   inputContainer: {
@@ -177,6 +199,7 @@ const styles = StyleSheet.create({
     marginVertical: 20,
     marginRight: 20,
     borderRadius: 30,
+    color: COLORS.primary,
   },
   iconContainer: {
     height: 50,
